@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   
-  qbittorrent:
+  qbt:
     image: lscr.io/linuxserver/qbittorrent:latest
     container_name: qbittorrent
     environment:
@@ -11,7 +11,7 @@ services:
       - WEBUI_PORT=8080
     volumes:
       - ${QBT_CONFIG_PATH}:/config
-      - ${QBT_DOWNLOADS_PATH}:/downloads
+      - ${QBT_DOWNLOADS_PATH}:${QBT_DOWNLOADS_PATH}
     ports:
       - 8080:8080
       - 6881:6881
@@ -33,3 +33,22 @@ services:
       - ${PLEX_SERIES_PATH}:/tv
       - ${PLEX_MOVIES_PATH}:/movies
     restart: unless-stopped
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 80:80
+      - 443:443
+    restart: always
+    volumes:
+      - ${NGINX_CONF_PATH}:/etc/nginx/conf.d/:ro
+      - ${CERTBOT_WWW_PATH}:/var/www/certbot/:ro
+      - ${CERTBOT_CONF_PATH}:/etc/nginx/ssl/:ro
+  
+  certbot:
+    image: certbot/certbot:latest
+    container_name: certbot
+    volumes:
+      - ${CERTBOT_WWW_PATH}:/var/www/certbot/:rw
+      - ${CERTBOT_CONF_PATH}:/etc/letsencrypt/:rw
