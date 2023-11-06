@@ -1,5 +1,9 @@
 # Raspberry Pi Media Server
 
+## Architecture
+
+![Pi Media Architecture](docs/pi-media.png)
+
 ## Installation
 
 Create `.env` file:
